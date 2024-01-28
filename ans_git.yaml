@@ -15,6 +15,14 @@
         name: firewalld
         state: stopped
         enabled: no      
+    
+    - name: install httpd
+      action: "{{ ansible_pkg_mgr }} name=httpd state=present"
+
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
 
     - name: clone update repo
       git:
