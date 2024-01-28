@@ -24,7 +24,7 @@
         name: httpd
         state: started
 
-    - name: clone update repo
+    - name: clone pull repo
       git:
         repo: "{{ git_repo_url }}"
         dest: "{{ web_server_root }}"
@@ -32,15 +32,6 @@
         update: yes
       become: yes
       register: git_result
-
-    - name: permission
-      file:
-        path: "{{ web_server_root }}"
-        state: directory
-        recurse: yes
-        owner: vagrant
-        group: vagrant
-      become: yes
 
 
     - name: httpd restart를 위한 trigger set
