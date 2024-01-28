@@ -4,8 +4,8 @@
   become: yes
   vars:
     git_repo_url: "https://github.com/shvic100/ansiblelab3.git"
-    web_server_root: "/home/vagrant/ansiblelab3-M"  # 웹 서버의 기본 디렉토리
-    apache_service_name: "apache2"  # Apache 서비스 이름 (시스템에 따라 다를 수 있음)
+    web_server_root: "/home/vagrant/ansiblelab3-M/ansiblelab3"  # 웹 서버의 기본 디렉토리
+    apache_service_name: "apache"  # Apache 서비스 이름 (시스템에 따라 다를 수 있음)
   
   tasks:
     - name: clone update repo
