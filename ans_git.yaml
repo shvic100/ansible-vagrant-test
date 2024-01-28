@@ -1,0 +1,48 @@
+---
+- name: 앤서블 깃클론, 업데이트
+  hosts: localhost
+  become: yes
+  vars:
+    git_repo_url: "https://github.com/shvic100/ansiblelab3.git"
+    web_server_root: "/home/vagrant/ansiblelab3-M"  # 웹 서버의 기본 디렉토리
+    apache_service_name: "apache2"  # Apache 서비스 이름 (시스템에 따라 다를 수 있음)
+  
+  tasks:
+    - name: clone update repo
+      git:
+        repo: "{{ git_repo_url }}"
+        dest: "{{ web_server_root }}"
+        version: master
+        update: yes
+      become: yes
+      register: git_result
+
+    - name: permission
+      file:
+        path: "{{ web_server_root }}"
+        state: directory
+        recurse: yes
+        owner: vagrant
+        group: vagrant
+      become: yes
+
+    - name: git update 재시작
+      service:
+        name: "{{ apache_service_name }}"
+        state: restarted
+      become: yes
+      when: git_result.changed
+
+    - name: debug git result
+      debug:
+        var: git_result
+
+
+
+
+
+
+
+
+  
+
