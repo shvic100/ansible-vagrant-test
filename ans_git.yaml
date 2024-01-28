@@ -1,13 +1,15 @@
 ---
 - name: 앤서블 깃클론, 업데이트
-  hosts: localhost
+  hosts: centos
   become: yes
   vars:
     git_repo_url: "https://github.com/shvic100/ansiblelab3.git"
-    web_server_root: "/home/vagrant/ansiblelab3-M/ansiblelab3"  # 웹 서버의 기본 디렉토리
-    apache_service_name: "apache"  # Apache 서비스 이름 (시스템에 따라 다를 수 있음)
+    web_server_root: "/var/www/html/ansiblelab3"  # 웹 서버의 기본 디렉토리
   
   tasks:
+    - name: centos git
+      action: "{{ ansible_pkg_mgr }} name=git state=present"
+      
     - name: clone update repo
       git:
         repo: "{{ git_repo_url }}"
@@ -26,18 +28,23 @@
         group: vagrant
       become: yes
 
-    - name: git update 재시작
-      service:
-        name: "{{ apache_service_name }}"
-        state: restarted
-      become: yes
+
+    - name: httpd restart를 위한 trigger set
+      ansible.builtin.set_fact:
+        restart_httpd: true
       when: git_result.changed
 
-    - name: debug git result
-      debug:
+  handlers:
+    - name: restart httpd
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+      when: restart_httpd
+      listen: git_result
+
+    - name: result
+      ansible.builtin.debug:
         var: git_result
-
-
 
 
 
